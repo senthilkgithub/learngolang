@@ -1,8 +1,8 @@
 package javaexec
 
 import (
-	et "exectypes"
 	"fmt"
+	et "github.com/senthilkgithub/learngolang/exectypes"
 )
 
 func Java_Executer(javaCodeRequest *et.ExecRequest, Response chan<- *et.ExecResponse) {

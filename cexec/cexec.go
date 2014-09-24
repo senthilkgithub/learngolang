@@ -1,8 +1,8 @@
 package cexec
 
 import (
-	et "exectypes"
 	"fmt"
+	et "github.com/senthilkgithub/learngolang/exectypes"
 )
 
 //recieve from structure

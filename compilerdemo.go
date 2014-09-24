@@ -1,12 +1,12 @@
 package main
 
 import (
-	cpp "c++exec"
-	c "cexec"
-	et "exectypes"
-	res "exeresponse"
 	"fmt"
-	java "javaexec"
+	cpp "github.com/senthilkgithub/learngolang/c++exec"
+	c "github.com/senthilkgithub/learngolang/cexec"
+	et "github.com/senthilkgithub/learngolang/exectypes"
+	res "github.com/senthilkgithub/learngolang/exeresponse"
+	java "github.com/senthilkgithub/learngolang/javaexec"
 )
 
 var (

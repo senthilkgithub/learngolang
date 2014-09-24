@@ -1,8 +1,8 @@
 package exeresponse
 
 import (
-	et "exectypes"
 	"fmt"
+	et "github.com/senthilkgithub/learngolang/exectypes"
 )
 
 func PostExecution_receiver(Response <-chan *et.ExecResponse) {
