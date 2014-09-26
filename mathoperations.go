@@ -3,6 +3,9 @@ package main
 import (
 	//"bufio"
 	"fmt"
+	"github.com/senthilkgithub/learngolang/factorial"
+	"github.com/senthilkgithub/learngolang/reversenumber"
+	"github.com/senthilkgithub/learngolang/swapnumber"
 	//"os"
 	//"strconv"
 )
@@ -89,30 +92,21 @@ func faherenheittocelcius() int {
 }
 
 func findFactorial() int {
-	var input uint
+	var input float64
 	fmt.Println("Please Enter value to find out factorial")
-	n, err := fmt.Scanf("%d\n", &input)
+	n, err := fmt.Scanf("%f\n", &input)
 	if err != nil || n < 0 {
-		// handle invalid input
 		fmt.Println(n, err)
 		return 0
 	}
-	fmt.Println("The factorial value of ", input, " is ", factorial(input))
+	fact, err := factorial.Factorial(input)
+	fmt.Println("The factorial value of ", input, " is ", fact)
 
 	return 0
 }
 
-func factorial(x uint) uint {
-
-	if x == 0 {
-		return 1
-	}
-	return x * factorial(x-1)
-}
-
-func math_reversenumber() int {
-	var input int
-	reverse := new(int)
+func math_reversenumber() float64 {
+	var input uint
 	fmt.Println("Enter a number to reverse\n")
 	n, err := fmt.Scanf("%d\n", &input)
 	if err != nil || n < 0 {
@@ -120,26 +114,16 @@ func math_reversenumber() int {
 		fmt.Println(n, err)
 		return 0
 	}
-
-	fmt.Println("Reverse of entered number is ", reversenumber(&input, reverse))
+	rev, err := reversenumber.ReverseNumber(input)
+	fmt.Println("Reverse of entered number is ", rev)
 	return 0
 }
 
-func reversenumber(num, rev *int) int {
-
-	for *num != 0 {
-		*rev = *rev * 10
-		*rev = *rev + *num%10
-		*num = *num / 10
-	}
-	return *rev
-}
-
-func swapNumbers() int {
+func swapNumbers() float64 {
 
 	var (
-		first  int
-		second int
+		first  float64
+		second float64
 	)
 	fmt.Printf("Enter two integers to add\n")
 	n, err := fmt.Scanf("%d%d\n", &first, &second)
@@ -147,17 +131,10 @@ func swapNumbers() int {
 		fmt.Println(err)
 	}
 
-	fmt.Printf("Value before swap first = %d second = %d\n", first, second)
-	swap(&first, &second)
-	fmt.Printf("Value after swap first = %d second = %d\n", first, second)
+	fmt.Printf("Value before swap first = %f second = %f\n", first, second)
+	first, second, err = swapnumber.Swap(first, second)
+	fmt.Printf("Value after swap first = %f second = %f\n", first, second)
 	return 0
-}
-
-func swap(first, second *int) int {
-	*first = *first + *second
-	*second = *first - *second
-	*first = *first - *second
-	return 1
 }
 
 func GetFibonacciSeries() int {

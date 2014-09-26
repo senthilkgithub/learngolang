@@ -1,28 +1,39 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/senthilkgithub/learngolang/swapnumber"
+)
 
 func main() {
-	var inputKey string
 	var (
-		first  int
-		second int
+		first  float64
+		second float64
+		errval error
 	)
 	fmt.Printf("Enter two integers to add\n")
-	fmt.Scanf("%d%d", &first, &second)
-
-	fmt.Printf("Value before swap first = %d second = %d\n", first, second)
-	swap(&first, &second)
-	fmt.Printf("Value after swap first = %d second = %d\n", first, second)
-	count := 0
-	count, _ = fmt.Scanf("%s", &inputKey)
-	if count <= 0 {
-		fmt.Scanf("%s", &inputKey)
+	_, err := fmt.Scanf("%f\n%f\n", &first, &second)
+	if err != nil {
+		fmt.Println(err)
+		getChar()
+	} else {
+		fmt.Printf("Value before swap first = %f second = %f\n", first, second)
+		first, second, errval = swapnumber.Swap(first, second)
+		if errval != nil {
+			fmt.Println(errval)
+			getChar()
+		} else {
+			fmt.Printf("Value after swap first = %f second = %f\n", first, second)
+			getChar()
+			return
+		}
 	}
+
 }
-func swap(first, second *int) int {
-	*first = *first + *second
-	*second = *first - *second
-	*first = *first - *second
-	return 1
+func getChar() {
+	var inputKey string
+	count, err := fmt.Scanf("%s\n", &inputKey)
+	if count != 1 {
+		fmt.Println(inputKey, err)
+	}
 }
