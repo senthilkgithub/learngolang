@@ -2,16 +2,24 @@ package main
 
 import (
 	"encoding/json"
-	//"fmt"
+	"fmt"
 	"github.com/gorilla/mux"
 	et "github.com/senthilkgithub/learngolang/exectypes"
+	"github.com/ziutek/mymysql/mysql"
+	_ "github.com/ziutek/mymysql/native" //
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 )
 
 type Myname struct {
 	Name string `json:"name"`
+}
+
+type Comapny struct {
+	ObjectId    int
+	CompanyName string
 }
 
 var (
@@ -25,20 +33,12 @@ func main() {
 		"X-Requested-With", "XMLHttpRequest")
 	rtr.Methods("GET,POST")
 
-	rtr.HandleFunc("/GetJsonReq", GetJsonReq)
 	rtr.HandleFunc("/CompileCode", CompileCode)
+	rtr.HandleFunc("/GetAllCompanyData", GetAllCompanyData)
 
 	http.Handle("/", rtr)
 
-	log.Println("Listening...")
-
-	// CompilerRequest := make(chan *et.ExecRequest)
-	// CompilerResponse := make(chan *et.ExecResponse)
-	// JsonRequest := make(chan *http.Request)
-	// JsonResponse := make(chan *http.Response)
-	// go RequestReceiver(JsonRequest, CompilerRequest)
-	// go Executer(Request, Response)
-	// go res.ResponseReceiver(Response)
+	log.Println("Listening...", time.Now())
 
 	http.ListenAndServe(":3000", nil)
 }
@@ -47,6 +47,36 @@ func profile(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	name := params["name"]
 	w.Write([]byte("Hello " + name))
+}
+
+func GetAllCompanyData(w http.ResponseWriter, r *http.Request) {
+	db := mysql.New("tcp", "", "devserver1:3306", "root", "lotus", "appserver_core")
+	err := db.Connect()
+	if err != nil {
+		panic(err)
+	}
+	res, err := db.Start("SELECT id,company_name FROM companys")
+	if err != nil {
+		panic(err)
+	}
+	//Print result to Response Writer
+	Comapnys := make([]Comapny, 700)
+	i := 0
+	for {
+		row, err := res.GetRow()
+		if err != nil {
+			panic(err)
+		}
+		if row == nil {
+			break
+		}
+		Comapnys[i] = Comapny{row.Int(0), row.Str(1)}
+		i++
+	}
+	db.Close()
+	fmt.Println(time.Now())
+	js, err := json.Marshal(Comapnys)
+	w.Write(js)
 }
 
 func CompileCode(w http.ResponseWriter, req *http.Request) {
@@ -87,7 +117,6 @@ func C_Executer(request *et.ExecRequest) et.ExecResponse { //(cco <-chan *Compil
 	return exeresult
 }
 func CPlusPLus_Executer(request *et.ExecRequest) et.ExecResponse { //(cco <-chan *CompileCodeObj)
-	fmt.Println("recieved ", request.Language, " for Execution")
 	exeresult := et.ExecResponse{}
 	exeresult.Language = request.Language
 	exeresult.Response = "c++ code has been executed successfully"
@@ -95,10 +124,9 @@ func CPlusPLus_Executer(request *et.ExecRequest) et.ExecResponse { //(cco <-chan
 	return exeresult
 }
 func Java_Executer(request *et.ExecRequest) et.ExecResponse {
-	fmt.Println("recieved ", javaCodeRequest.Language, " for Execution")
 	exeresult := et.ExecResponse{}
-	exeresult.Language = javaCodeRequest.Language
+	exeresult.Language = request.Language
 	exeresult.Response = "Java code has been executed successfully"
-	exeresult.RequestCode = javaCodeRequest.RequestCode
+	exeresult.RequestCode = request.RequestCode
 	return exeresult
 }
