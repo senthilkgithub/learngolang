@@ -1,0 +1,6 @@
+@echo off
+for /l in (1, 1, 100) do start autoclient.exe 
+
+set /p UserInputPath= Press key to Exit?
+%UserInputPath%
+exit
