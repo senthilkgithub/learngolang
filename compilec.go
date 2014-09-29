@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"os/exec"
-	//"time"
+	"strings"
 )
 
 func main() {
@@ -14,7 +14,9 @@ func main() {
 	out, err := cmd.CombinedOutput()
 	if err != nil || out != nil {
 		if out != nil && len(out) > 0 {
-			fmt.Println(string(out))
+			errmsg := string(out)
+			errmsg = strings.Replace(errmsg, "D:\\Testprograms\\C\\main.c:", "", -1)
+			fmt.Println(errmsg)
 		} else if err != nil {
 			fmt.Printf("%s", err.Error())
 		} else {
