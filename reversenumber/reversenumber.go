@@ -1,10 +1,12 @@
+//Reversing uint type number
 package reversenumber
 
 import "errors"
 
+//Accepts uint type number of more than single digit and returns reverse of that number and error if it failed by matching criteria
 func ReverseNumber(num uint) (uint, error) {
 
-	if countDigitsInNumber(num) <= 1 {
+	if CountDigitsInNumber(num) <= 1 {
 		return 0, errors.New("Atleaset two digit values expected")
 	} else {
 		var rev uint
@@ -17,7 +19,9 @@ func ReverseNumber(num uint) (uint, error) {
 	}
 }
 
-func countDigitsInNumber(numb uint) (digit int) {
+//Short method for counting number of digits presented in given number
+// Purpose of the method is to findout More than one digit numbers
+func CountDigitsInNumber(numb uint) (digit int) {
 	digit = 0
 	for numb != 0 && digit != 2 {
 		numb = numb / 10

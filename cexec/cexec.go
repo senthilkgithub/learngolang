@@ -1,3 +1,4 @@
+// Complete Package for C language compilation and executaion using gcc compiler
 package cexec
 
 import (
@@ -8,7 +9,8 @@ import (
 	"strings"
 )
 
-func C_Executer(req et.ExecRequest, CompilerResponse chan<- et.ExecResponse) {
+/*C_Executer gets source code and CommandLine Arguments and returns Final Response(Output/Error)*/
+func C_Executer(req et.ExecRequest) et.ExecResponse {
 	exeresult := et.ExecResponse{}
 	req.MainPath, exeresult.FolderPath, _ = createMainFile(req.Guid, req.SourceCode)
 	resp, err := compileAndExecuteC(req.MainPath, req.CommandLineArgs)
@@ -17,19 +19,16 @@ func C_Executer(req et.ExecRequest, CompilerResponse chan<- et.ExecResponse) {
 	} else {
 		exeresult.Response = resp
 	}
-	exeresult.RespWriter = req.RespWriter
-	CompilerResponse <- exeresult
+	return exeresult
 }
 
-// The process of compilation and execution is taken care by function CompileAndExecuteC(filepath)(output,error)
+// The process of compilation and execution is taken care by this function CompileAndExecuteC(filepath)(output,error)
 func compileAndExecuteC(mainFilePath string, commandLineArgs string) (output string, err error) {
-	// if commandLineArgs !=""  {
-	// 	commandLineArgs = ""
-	// }
 
 	outputpath := strings.Replace(mainFilePath, ".c", ".o", -1)
 	exepath := strings.Replace(mainFilePath, ".c", ".exe", -1)
 
+	//Generation of output file(.o)
 	cmd := exec.Command("cmd", "/C", "C:\\MinGW\\bin\\gcc -o "+outputpath+" -c "+mainFilePath)
 	out, err := cmd.CombinedOutput()
 	if err != nil || out != nil {
@@ -43,6 +42,7 @@ func compileAndExecuteC(mainFilePath string, commandLineArgs string) (output str
 			goto Co
 		}
 	}
+	//Generation of Exe file using output file(.o)
 Co:
 	cmd = exec.Command("cmd", "/C", "C:\\MinGW\\bin\\gcc -o "+exepath+" "+outputpath)
 	out, err = cmd.CombinedOutput()
@@ -55,9 +55,10 @@ Co:
 			goto Ex
 		}
 	}
+	//Stage of execution
 
 Ex:
-	cmd = exec.Command("cmd", "/C", exepath+commandLineArgs)
+	cmd = exec.Command("cmd", "/C", exepath+" "+commandLineArgs)
 	out, err = cmd.CombinedOutput()
 	if err != nil || out != nil {
 		if out != nil && len(out) > 0 {
